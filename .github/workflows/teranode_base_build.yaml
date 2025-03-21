@@ -20,14 +20,14 @@ jobs:
     with:
       file: ./Dockerfile_build
       repository: ${{ github.repository }}
-      tag_latest: false
+      tag_latest: true
       use_short_sha_tag: true
       build_args: |
         GITHUB_SHA=${{ github.sha }}
         GITHUB_REF=${{ github.ref_name }}
       use_packages: true
       use_ecr: true
-      create_manifest: false
+      create_manifest: true
       ecr_region: "eu-north-1"
       ecr_repo: "teranode-base"
       architectures: '["amd64", "arm64"]'
