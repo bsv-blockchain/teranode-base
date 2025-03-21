@@ -18,6 +18,7 @@ jobs:
       packages: write
     secrets: inherit
     with:
+      file: ./Dockerfile_run
       repository: ${{ github.repository }}
       tag_latest: false
       use_short_sha_tag: true
