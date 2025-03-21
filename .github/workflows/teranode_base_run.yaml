@@ -1,0 +1,33 @@
+name: Teranode base run
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  # Run remote build and deploy workflow
+  build-and-deploy:
+    uses: bitcoin-sv/.github/.github/workflows/build_and_deploy.yaml@main
+    permissions:
+      contents: read
+      packages: write
+    secrets: inherit
+    with:
+      repository: ${{ github.repository }}
+      tag_latest: true
+      use_short_sha_tag: true
+      build_args: |
+        GITHUB_SHA=${{ github.sha }}
+        GITHUB_REF=${{ github.ref_name }}
+      use_packages: true
+      use_ecr: true
+      create_manifest: false
+      ecr_region: "eu-north-1"
+      ecr_repo: "teranode-base"
+      architectures: '["amd64", "arm64"]'
+      runner_labels: '{"amd64":"teranode-runner","arm64":"teranode-runner-arm"}'
