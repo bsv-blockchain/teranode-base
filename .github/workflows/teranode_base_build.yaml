@@ -19,6 +19,7 @@ jobs:
     secrets: inherit
     with:
       file: ./Dockerfile_build
+      image_prefix: "build-"
       repository: ${{ github.repository }}
       tag_latest: true
       use_short_sha_tag: true
