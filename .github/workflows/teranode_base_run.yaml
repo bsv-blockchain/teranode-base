@@ -30,4 +30,4 @@ jobs:
       ecr_region: "eu-north-1"
       ecr_repo: "teranode-base"
       architectures: '["amd64", "arm64"]'
-      runner_labels: '{"amd64":"teranode-runner","arm64":"teranode-runner-arm"}'
+      runner_labels: '{"amd64":"linux-amd64","arm64":"linux-arm64"}'
