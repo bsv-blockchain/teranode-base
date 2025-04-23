@@ -23,9 +23,6 @@ jobs:
       repository: ${{ github.repository }}
       tag_latest: true
       use_short_sha_tag: true
-      build_args: |
-        GITHUB_SHA=${{ github.sha }}
-        GITHUB_REF=${{ github.ref_name }}
       use_packages: true
       use_ecr: true
       create_manifest: true
