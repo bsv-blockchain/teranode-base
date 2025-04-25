@@ -1,7 +1,7 @@
 # docker file used to build the teranode base run docker image.
 # https://github.com/bitcoin-sv/teranode-base/blob/main/Dockerfile_run
 FROM ubuntu:noble AS linux-amd64
-RUN apt update && apt install -y wget
+RUN apt-get update && apt-get install -y wget
 RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v1.9.2/grpcurl_1.9.2_linux_x86_64.tar.gz && \
     tar -xvf grpcurl_1.9.2_linux_x86_64.tar.gz && \
     mv grpcurl /usr/local/bin && \
@@ -9,7 +9,7 @@ RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v1.9.2/grpcur
     ln -s /usr/local/bin/grpcurl /usr/bin/grpcurl
 
 FROM ubuntu:noble AS linux-arm64
-RUN apt update && apt install -y wget
+RUN apt-get update && apt-get install -y wget
 RUN wget https://github.com/fullstorydev/grpcurl/releases/download/v1.9.2/grpcurl_1.9.2_linux_arm64.tar.gz && \
     tar -xvf grpcurl_1.9.2_linux_arm64.tar.gz && \
     mv grpcurl /usr/local/bin && \
@@ -20,7 +20,7 @@ ARG TARGETOS
 ARG TARGETARCH
 
 FROM ${TARGETOS}-${TARGETARCH}
-RUN apt update && \
-    apt install -y vim htop curl lsof iputils-ping net-tools dnsutils postgresql-client telnet sysstat procps netcat-openbsd && \
+RUN apt-get update && \
+    apt-get install -y vim htop curl lsof iputils-ping net-tools dnsutils postgresql-client telnet sysstat procps netcat-openbsd && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
