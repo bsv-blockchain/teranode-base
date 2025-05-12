@@ -14,6 +14,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: "eu-north-1"
+          # role-to-assume: ${{ secrets.AWS_OIDC_TERANODE_BASE_ROLE }}
           role-to-assume: "arn:aws:iam::434394763103:role/gh-oidc-teranode-base-ecr"
 
       # Authenticate Docker to AWS ECR
@@ -24,3 +25,17 @@ jobs:
           REPOSITORY: "teranode-base"
         with:
           mask-password: true
+
+      # Pull docker image
+      - name: Pull teranode-base image
+        id: docker-pull
+        run: |
+          docker pull 434394763103.dkr.ecr.eu-north-1.amazonaws.com/teranode-base:build-latest
+          docker images
+
+      # Pull docker ext image
+      - name: Pull teranode image
+        id: docker-pull-ext
+        run: |
+          docker pull 434394763103.dkr.ecr.eu-north-1.amazonaws.com/teranode:latest
+          docker images
