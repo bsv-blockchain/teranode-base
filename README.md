@@ -9,4 +9,4 @@ They are sourced at the top of the main Teranode Dockerfile at [Dockerfile](http
 
 Check new changes into the repo to get the CICD process to run. Please test the Dockerfiles locally before pushing changes to the repo.  
 
-There are no automated tests for these builds at this time. [Todo: Add tests]
+There are no automated tests for these builds at this time. [Todo: Add]
