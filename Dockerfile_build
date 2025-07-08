@@ -6,15 +6,16 @@ ARG TARGETOS
 ARG TARGETARCH
 ARG GITHUB_SHA
 
-# Install packages
+# Install packages and install Golang
+ARG GO_VERSION=1.24.5
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y ca-certificates build-essential gawk bison manpages-dev file curl gnupg wget software-properties-common && \
-    add-apt-repository -y ppa:longsleep/golang-backports && \
-    apt-get update && \
-    apt-get install -y golang-1.24 && \
-    ln -s /usr/lib/go-1.24/bin/go /usr/bin/go
+    wget https://go.dev/dl/go${GO_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz && \
+    tar -C /usr/local -xzf go${GO_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz && \
+    ln -s /usr/local/go/bin/go /usr/bin/go && \
+    ln -s /usr/local/go/bin/gofmt /usr/bin/gofmt
 
 # 18 is the latest LTS version of NodeJS
 ENV NODE_MAJOR=18
