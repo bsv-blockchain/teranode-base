@@ -7,7 +7,7 @@ ARG TARGETARCH
 ARG GITHUB_SHA
 
 # Install packages and install Golang
-ARG GO_VERSION=1.25.0
+ARG GO_VERSION=1.25.1
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get upgrade -y && \
