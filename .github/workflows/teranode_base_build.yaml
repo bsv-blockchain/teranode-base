@@ -13,7 +13,7 @@ permissions:
 jobs:
   # Run remote build and deploy workflow
   build-and-deploy:
-    uses: ${{ github.repository_owner }}/.github/.github/workflows/build_and_deploy.yaml@main
+    uses: bsv-blockchain/.github/.github/workflows/build_and_deploy.yaml@main
     permissions:
       contents: read
       packages: write
@@ -25,11 +25,7 @@ jobs:
       repository: ${{ github.repository }}
       tag_latest: true
       use_short_sha_tag: true
-      use_packages: true
-      use_ecr: true
       create_manifest: true
-      ecr_region: "eu-north-1"
-      ecr_repo: "teranode-base"
       architectures: '["amd64", "arm64"]'
       runner_labels: '{"amd64":"linux-amd64","arm64":"linux-arm64","manifest":"ubuntu-latest"}'
       build_args: |
