@@ -17,8 +17,8 @@ RUN apt-get update && \
     ln -s /usr/local/go/bin/go /usr/bin/go && \
     ln -s /usr/local/go/bin/gofmt /usr/bin/gofmt
 
-# 18 is the latest LTS version of NodeJS
-ENV NODE_MAJOR=18
+# 22 is the latest LTS version of NodeJS
+ENV NODE_MAJOR=22
 
 # Add nodesource to apt sources and install nodejs
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list &&\
