@@ -1,0 +1,30 @@
+# docker file used to build the teranode self-hosted runner image.
+# https://github.com/bsv-blockchain/teranode-base/blob/main/Dockerfile_runner
+#
+# Extends the stock GitHub Actions runner image with the tools Teranode's CI
+# jobs expect from GitHub-hosted runners. Go and Node are not installed here:
+# jobs set them up with actions/setup-go and friends.
+FROM ghcr.io/actions/actions-runner:2.338.2
+
+# Docker Compose v2 CLI plugin. Same version as GitHub-hosted ubuntu-24.04.
+# The SHA-256 is the release asset digest for docker-compose-linux-x86_64.
+ARG COMPOSE_VERSION=2.38.2
+ARG COMPOSE_SHA256=486b3ffc0f806ca2efbc430cef89955386011662f0c76bad17c103d059cfa9cf
+
+USER root
+
+# build-essential: gcc/g++ and libc/libstdc++ headers for cgo (-race, gobdk)
+# zstd: lets actions/cache use zstd, matching caches saved on GitHub-hosted runners
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential make zstd xz-utils wget bc && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL -o /tmp/docker-compose \
+        "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-linux-x86_64" && \
+    echo "${COMPOSE_SHA256}  /tmp/docker-compose" | sha256sum -c - && \
+    install -m 0755 /tmp/docker-compose /usr/local/lib/docker/cli-plugins/docker-compose && \
+    rm /tmp/docker-compose
+
+USER runner
