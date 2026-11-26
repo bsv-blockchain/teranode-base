@@ -1,0 +1,70 @@
+name: Teranode base runner
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - Dockerfile_runner
+      - .github/workflows/teranode_base_runner.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  id-token: write
+
+jobs:
+  # Run remote build and deploy workflow (amd64 only)
+  build-and-deploy:
+    uses: bsv-blockchain/teranode-shared-workflows/.github/workflows/build_and_deploy.yaml@main
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    secrets: inherit
+    with:
+      file: ./Dockerfile_runner
+      image_prefix: "runner-"
+      repository: ${{ github.repository }}
+      # Only main moves the latest tags, also on manual runs.
+      tag_latest: ${{ github.ref == 'refs/heads/main' }}
+      use_short_sha_tag: true
+      # The shared manifest step expects both amd64 and arm64 images.
+      create_manifest: false
+      architectures: '["amd64"]'
+      runner_labels: '{"amd64":"ubuntu-latest"}'
+
+  # The shared build step pushes runner-<sha>-amd64 and runner-latest-amd64.
+  # Point runner-<sha> (and runner-latest on main) at the same image.
+  tag:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag runner image without arch suffix
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
+        run: |
+          # Same tag the shared get_tag job computes.
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            tag="${GITHUB_REF_NAME}"
+          else
+            tag="$(git rev-parse --short HEAD)"
+          fi
+          tags=(-t "${IMAGE}:runner-${tag}")
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            tags+=(-t "${IMAGE}:runner-latest")
+          fi
+          docker buildx imagetools create "${tags[@]}" "${IMAGE}:runner-${tag}-amd64"
